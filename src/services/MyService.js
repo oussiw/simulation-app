@@ -1,9 +1,13 @@
 class MyService {
-    calendar={
-        events:[],
-        H:0,
-        index:0
+    calendar = {
+        events: [],
+        H: 0,
+        index: 0
     };
+    H = 0;
+    LQ = 0;
+    NCE = 0;
+    NCP = 0;
     getAleaTab = (IX, IY, IZ) => {
         let ix = IX;
         let iy = IY;
@@ -43,16 +47,16 @@ class MyService {
     }
 
     planifier_evenement = (ref, type, alea) => {
-        if(this.calendar.events.length===0){
-            this.calendar.H = this.selectionner_evenement(type,alea);
-            this.calendar.events.push({reference: ref, type: type, date: this.selectionner_evenement(type,alea)});
-        }
-        else{
-            this.calendar.H += this.selectionner_evenement(type,alea);
-            this.calendar.events.push({reference: ref, type: type, date: this.selectionner_evenement(type,alea)});
+        if (this.calendar.events.length === 0) {
+            this.calendar.H = this.selectionner_evenement(type, alea);
+            this.calendar.events.push({reference: ref, type: type, date: this.selectionner_evenement(type, alea)});
+        } else {
+            this.calendar.H += this.selectionner_evenement(type, alea);
+            this.calendar.events.push({reference: ref, type: type, date: this.selectionner_evenement(type, alea)});
         }
 
     }
+
     selectionner_evenement = (type, alea) => {
         switch (type) {
             case "A":
@@ -89,7 +93,7 @@ class MyService {
     }
 
     // temps de magasinage
-    F2(alea) {
+    F2 = (alea)=>{
         if (alea >= 0 && alea < 0.1) return 2;
         if (alea >= 0.1 && alea < 0.3) return 4;
         if (alea >= 0.3 && alea <= 0.7) return 6;
@@ -105,120 +109,103 @@ class MyService {
         if (alea > 0.85 && alea <= 1) return 4;
     }
 
-    arrivee=()=>{
 
-    }
-
-    fin_magasinage=()=>{
-
-    }
-
-    fin_paiement=()=>{
-
-    }
 // arrivée
-    var H = 0;
-    var LQ = 0;
-    var NCE = 0;
-    var NCP = 0; 
-    function fonctionArrivee(ref){
-    
-    var i = 1; 
-    //Traitement de l’arrivée sélectionnée dans le calendrier
-    if (LQ <= 1) {
-        //client entre et commence magasinage
-        NCE++;
-        //planifier un événement Fin Magasinage dans le calendrier *)
-        planifier_evt(ref,"FM", H+F2(alea));
+    fonction_Arrivee=(ref)=>{
+
+        var i = 1;
+        //Traitement de l’arrivée sélectionnée dans le calendrier
+        if (LQ <= 1) {
+            //client entre et commence magasinage
+            NCE++;
+            //planifier un événement Fin Magasinage dans le calendrier *)
+            planifier_evt(ref, "FM", H + F2(alea));
+        } else {
+            //client perdu
+            NCP++;
+        }
+        //arrivée client suivant
+        i++;
+        DA = H + F1(alea);
+        if (DA[i] <= 720) { //l’arrivée se fait à temps
+            //planifier un événement arrivée dans le calendrier
+            planifier_evt(i, "A", DA);
+        }
     }
-    else {
-        //client perdu 
-        NCP++;
-    }
-    //arrivée client suivant
-    i++; 
-    DA = H + F1(alea);
-    if ( DA[i] <= 720) { //l’arrivée se fait à temps
-        //planifier un événement arrivée dans le calendrier
-        planifier_evt(i,"A",DA);
-    }
-}
 
 
 // pour 2 caisses
-Fin-magasinage2 ( ref ) {
-    
-    if(C1 == 0 || C2== 0)
-    {
-      if(C1 == 0) C2 = ref;
-      else C2 = ref;
-      Planifier-evt ( ref , "FP" , H + F3(alea) );
+    fin_magasinage2=(ref)=>{
+
+        if (C1 == 0 || C2 == 0) {
+            if (C1 == 0) C2 = ref;
+            else C2 = ref;
+            Planifier - evt(ref, "FP", H + F3(alea));
+
+        } else {
+            LQ = LQ + 1;
+            Insererfile(ref);
+        }
 
     }
-    else {
-       LQ = LQ + 1;
-       Insererfile (ref);
-    }
-    
-}
 
 // pour 3 caisses
+    fin_magasinage3=(ref)=>{
+        if (C1 == 0 || C2 == 0 || C3 == 0) {
+            if (C1 == 0) C1 = ref;
+            else if (C2 == 0) C2 = ref;
+            else C3 = ref;
+            Planifier - evt(ref, "FP", H + F3(alea));
 
-Fin-magasinage3 ( ref ) {
-    
-    if(C1 == 0 || C2 == 0 || C3 ==0)
-    {
-      if(C1 == 0) C1 = ref;
-      else if (C2 == 0) C2 = ref;
-      else C3 = ref;
-      Planifier-evt ( ref , "FP" , H + F3(alea) );
+        } else {
+            LQ = LQ + 1;
+            Insererfile(ref);
+        }
 
     }
-    else {
-       LQ = LQ + 1;
-       Insererfile (ref);
-    }
-    
-}
+
 // pour 2 caisses
- Fin-paiement2(ref) {
-   int J;
-   if (LQ = 0) {
-     if(C1 == ref) C1 =0;
-     else C2=0;
-   }
-   else {
-     J= file[0];
-     Supprimerfile(J);
-     LQ = LQ -1;
-     if(C1 == ref) C1 = J;
-     else C2 = J;
-     Planifier-evt ( J , "FP" , H + F3(alea) )  ;   
-   }
- }
+    fin_paiement2=(ref)=>{
+        int
+        J;
+        if (LQ = 0) {
+            if (C1 == ref) C1 = 0;
+            else C2 = 0;
+        } else {
+            J = file[0];
+            Supprimerfile(J);
+            LQ = LQ - 1;
+            if (C1 == ref) C1 = J;
+            else C2 = J;
+            Planifier - evt(J, "FP", H + F3(alea));
+        }
+    }
 
 
-
- 
 // pour 3 caisses
+    fin_paiement3=(ref)=>{
+        var J;
+        if (LQ = 0) {
+            if (C1 == ref) C1 = 0;
+            else if (C2 == ref) C2 = 0;
+            else C3 = 0;
+        }
+        eles
+        {
+            J = file[0];
+            Supprimerfile(J);
+            LQ = LQ - 1;
+            if (C1 == ref) C1 = J;
+            else if (C2 == ref) C2 = J;
+            else C3 = J;
+            Planifier - evt(J, "FP", H + F3(alea));
+        }
+    }
 
-  Fin-paiement3(ref) {
-   var J;
-   if (LQ = 0) {
-     if(C1 == ref) C1 =0;
-     else if(C2 == ref) C2=0;
-     else C3 = 0;
-   }
-   eles {
-     J= file[0];
-     Supprimerfile(J);
-     LQ = LQ -1;
-     if(C1 == ref) C1 = J;
-     else if(C2 == ref) C2 = J;
-     else C3 = J;
-     Planifier-evt ( J , "FP" , H + F3(alea) ) ;   
-   }
- }
+    effetuer_sumulation = (nb_simulation, IX, IY, IZ, nb_caisses) => {
+
+        //Retour
+    }
 
 }
 
