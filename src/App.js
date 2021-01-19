@@ -3,6 +3,7 @@ import {useState} from "react"
 import DeuxCaisses from "./components/DeuxCaisses";
 import TroisCaisses from "./components/TroisCaisses";
 import MyService from "./services/MyService";
+import "./indicators"
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
               onClick={()=>{setDeuxCaissesHidden(!deuxCaissesHidden);
                             console.log(MyService.effetuerSimulation(1,240,240,240))}
               }>Simuler deux caisses</button>
+
       <span className="col-md-1"></span>
       <button className="btn btn-outline-dark col-md-3"
               onClick={()=>setTroisCaissesHidden(!troisCaissesHidden)}>Simuler trois caisses</button><br/><hr/>

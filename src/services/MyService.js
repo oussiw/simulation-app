@@ -3,7 +3,10 @@ import '../indicators.js';
 class MyService {
     getAleaTab = () => {
         for (let i = 0; i < 99; i++) {
-            global.alea_tab.push(this.getAlea());
+            //global.C1 = global.C1+1
+            //global.aleatab.tableau.push("Alea Tab")
+            //console.log("Hello Calendar "+global.aleatab.tableau)
+            global.aleatab.tableau.push(this.getAlea());
         }
     }
 
@@ -182,8 +185,9 @@ class MyService {
     //     }
     // }
     effetuerSimulation = (nb_simulation, IX, IY, IZ) => {
-
-        global.alea_tab = this.getAleaTab(IX,IY,IZ)
+        console.log(this.getAleaTab(IX,IY,IZ))
+        //global.aleatab.tableau = this.getAleaTab(IX,IY,IZ)
+        console.log("Change here "+global.aleatab.tableau)
         let alea = this.findAlea(global.i);
         this.planifierEvenement(global.i,"A",this.F1(alea.a));
         global.calendar.H = this.F1(alea.a);
@@ -218,15 +222,17 @@ class MyService {
     findAlea =(reference_client)=>{
         let alea = {a:0,fm:0,fp:0};
         let indice_client = 0;
-        for(let i=0; i < global.alea_tab.length; i++){
+        console.log("Tableau "+global.aleatab.nothing)
+        let length = global.aleatab.tableau.length
+        for(let i=0; i < length; i++){
             if(i%3===0){
                 indice_client = 1;
             }
             if(indice_client === reference_client){
-                if(i%3===0) alea.a = global.alea_tab[i];
-                else if(i%3===1) alea.fm = global.alea_tab[i];
+                if(i%3===0) alea.a = global.aleatab.tableau[i];
+                else if(i%3===1) alea.fm = global.aleatab.tableau[i];
                 else if(i%3===2) {
-                    alea.fp = global.alea_tab[i];
+                    alea.fp = global.aleatab.tableau[i];
                     break;
                 }
             }
