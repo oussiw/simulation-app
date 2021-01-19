@@ -1,7 +1,5 @@
-global.calendar = {
-    events: [],
-    H: 0
-}
+global.calendar = [];
+global.H = 0;
 global.alea_tab= [];
 global.file = [];
 global.i = 1;

@@ -2,18 +2,31 @@ import '../indicators.js';
 
 class MyService {
 
+    calendar = [];
+    H = 0;
+    alea_tab= [];
+    file = [];
+    i = 1;
+    LQ = 0;
+    NCP = 0;
+    NCE = 0;
+    C1 = 0;
+    C2 = 0;
+    IX = 0;
+    IY = 0;
+    IZ = 0;
+
     getAleaTab = () => {
-        for (let i = 0; i < 99; i++) {
-            global.alea_tab.push(this.getAlea());
+        for (let i = 0; i < 3; i++) {
+            this.alea_tab.push(this.getAlea());
         }
     }
 
     getAlea = () => {
         let inter;
-        let IX = 171 * (global.IX % 177) - 2 * (global.IX / 177);
-        let IY = 172 * (global.IY % 176) - 35 * (global.IY / 176);
-        let IZ = 170 * (global.IZ % 178) - 63 * (global.IZ / 178);
-
+        let IX = 171 * (this.IX % 177) - 2 * (this.IX / 177);
+        let IY = 172 * (this.IY % 176) - 35 * (this.IY / 176);
+        let IZ = 170 * (this.IZ % 178) - 63 * (this.IZ / 178);
         if (IX < 0) {
             IX += 30269;
         }
@@ -23,16 +36,15 @@ class MyService {
         if (IZ < 0) {
             IZ += 30323;
         }
-
-        global.IX = IX;
-        global.IY = IY;
-        global.IZ = IZ;
+        this.IX = IX;
+        this.IY = IY;
+        this.IZ = IZ;
         inter = ((IX / 30269) + (IY / 30307) + (IZ / 30323));
         return (inter - Math.floor(inter)).toFixed(4);
     }
 
     planifierEvenement = (ref, type, date) => {
-        global.calendar.events.push({
+        this.calendar.push({
             reference: ref,
             type: type,
             date: date
@@ -40,23 +52,23 @@ class MyService {
     }
 
     selectionnerEvenement = ()=>{
-        let theEvent = global.calendar.events[0];
+        let theEvent = this.calendar[0];
         let atIndex=0;
-        for(let i=0;i< global.calendar.events.length;i++){
-            if(( global.calendar.events[i].date - global.calendar.H) < (theEvent.date - global.calendar.H)){
-                theEvent = global.calendar.events[i];
+        for(let i=0;i< this.calendar.length;i++){
+            if(( this.calendar[i].date - this.H) < (theEvent.date - this.H)){
+                theEvent = this.calendar[i];
             }
-            else if((global.calendar.events[i].date - global.calendar.H) === (theEvent.date - global.calendar.H)){
-                if(global.calendar.events[i].type==="A"){
-                    theEvent = global.calendar.events[i];
+            else if((this.calendar[i].date - this.H) === (theEvent.date - this.H)){
+                if(this.calendar[i].type==="A"){
+                    theEvent = this.calendar[i];
                 }
-                else if(global.calendar.events[i].type==="FM" && theEvent.type==="FP"){
-                    theEvent = global.calendar.events[i];
+                else if(this.calendar[i].type==="FM" && theEvent.type==="FP"){
+                    theEvent = this.calendar[i];
                 }
             }
         }
-        global.calendar.H = theEvent.date;
-        global.calendar.events.splice(atIndex,1);
+        this.H = theEvent.date;
+        this.calendar.splice(atIndex,1);
         return theEvent;
     }
 
@@ -90,27 +102,28 @@ class MyService {
 
     // arrivée
     fonctionArrivee=(ref,alea)=>{
-        if (global.LQ <= 1) {
-            global.NCE++;
-            this.planifierEvenement(ref, "FM", global.calendar.H + this.F2(alea.fm));
+        if (this.LQ <= 1) {
+            this.NCE++;
+            this.planifierEvenement(ref, "FM", this.H + this.F2(alea.fm));
         }
-        else { global.NCP++;}
-        global.i++;
-        let DA = global.calendar.H + this.F1(alea.a);
-        if (DA[global.i] <= 720) {
-            this.planifierEvenement(global.i, "A", DA);
+        else { this.NCP++;}
+        this.i++;
+        console.log(this.H)
+        let DA = this.H + this.F1(alea.a);
+        if (DA <= 720) {
+            this.planifierEvenement( this.i, "A", DA);
         }
     }
 
     // pour 2 caisses
     finMagasinage2 =(ref,alea)=>{
-        if (global.C1 === 0 || global.C2 === 0) {
-            if (global.C1 === 0) global.C2 = ref;
-            else global.C2 = ref;
-            this.planifierEvenement(ref, "FP",global.calendar.H + this.F3(alea.fp));
+        if (this.C1 === 0 || this.C2 === 0) {
+            if (this.C1 === 0) this.C2 = ref;
+            else this.C2 = ref;
+            this.planifierEvenement(ref, "FP",this.H + this.F3(alea.fp));
         } else {
-            global.LQ = global.LQ + 1;
-            global.file.push(ref);
+            this.LQ = this.LQ + 1;
+            this.file.push(ref);
         }
     }
 
@@ -131,17 +144,17 @@ class MyService {
 
     // pour 2 caisses
     finPaiement2 = (ref,alea) => {
-        if (global.LQ === 0) {
-            if (global.C1 === ref) global.C1 = 0;
-            else global.C2 = 0;
+        if (this.LQ === 0) {
+            if (this.C1 === ref) this.C1 = 0;
+            else this.C2 = 0;
         }
         else {
-            let J = global.file[0];
-            global.file.shift(); // supprimer element
-            global.LQ = global.LQ - 1;
-            if (global.C1 === ref) global.C1 = J;
-            else global.C2 = J;
-            this.planifierEvenement(J, "FP", global.calendar.H + this.F3(alea));
+            let J = this.file[0];
+            this.file.shift(); // supprimer element
+            this.LQ = this.LQ - 1;
+            if (this.C1 === ref) this.C1 = J;
+            else this.C2 = J;
+            this.planifierEvenement(J, "FP", this.H + this.F3(alea));
         }
     }
 
@@ -164,13 +177,21 @@ class MyService {
     //     }
     // }
     effetuerSimulation = (IX, IY, IZ) => {
-        this.getAleaTab(IX,IY,IZ)
-        let alea = this.findAlea(global.i);
-        this.planifierEvenement(global.i,"A",this.F1(alea.a));
-        global.calendar.H = this.F1(alea.a);
-        while (global.calendar.events.length!==0){
+        this.IX = IX;
+        this.IY = IY;
+        this.IZ = IZ;
+        this.getAleaTab()
+        let alea = this.findAlea(this.i);
+        console.log(this.alea_tab)
+        this.planifierEvenement(1,"A",this.F1(alea.a));
+        this.H = this.F1(alea.a);
+        let int = 0;
+
+        console.log(this.calendar)
+        console.log("Calendar")
+
+        while (this.calendar.length!==0 && int <10){
             let selectedEvent = this.selectionnerEvenement();
-            console.log(selectedEvent)
             alea = this.findAlea(selectedEvent.reference);
             switch (selectedEvent.type) {
                 case "A":
@@ -183,39 +204,40 @@ class MyService {
                     this.finPaiement2(selectedEvent.reference,alea);
                     break;
             }
-            console.log({
-                NCE:global.NCE,
-                NCP:global.NCP,
-                i:global.i,
-                LQ:global.LQ,
-                C1:global.C1,
-                C2:global.C2,
-                file:global.file
-            })
+            // console.log({
+            //     NCE:this.NCE,
+            //     NCP:this.NCP,
+            //     i:this.i,
+            //     LQ:this.LQ,
+            //     C1:this.C1,
+            //     C2:this.C2,
+            //     file:this.file
+            // })
+            int++;
         }
         return ({
-            NCE:global.NCE,
-            NCP:global.NCP,
-            i:global.i,
-            LQ:global.LQ,
-            C1:global.C1,
-            C2:global.C2,
-            file:global.file
+            NCE:this.NCE,
+            NCP:this.NCP,
+            i:this.i,
+            LQ:this.LQ,
+            C1:this.C1,
+            C2:this.C2,
+            file:this.file
         })
     }
 
     findAlea =(reference_client)=>{
         let alea = {a:0,fm:0,fp:0};
         let indice_client = 0;
-        for(let i=0; i < global.alea_tab.length; i++){
+        for(let i=0; i < this.alea_tab.length; i++){
             if(i%3===0){
                 indice_client = 1;
             }
             if(indice_client === reference_client){
-                if(i%3===0) alea.a = global.alea_tab[i];
-                else if(i%3===1) alea.fm = global.alea_tab[i];
+                if(i%3===0) alea.a = this.alea_tab[i];
+                else if(i%3===1) alea.fm = this.alea_tab[i];
                 else if(i%3===2) {
-                    alea.fp = global.alea_tab[i];
+                    alea.fp = this.alea_tab[i];
                     break;
                 }
             }
