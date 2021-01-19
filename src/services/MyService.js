@@ -116,6 +116,109 @@ class MyService {
     fin_paiement=()=>{
 
     }
+// arrivée
+    var H = 0;
+    var LQ = 0;
+    var NCE = 0;
+    var NCP = 0; 
+    function fonctionArrivee(ref){
+    
+    var i = 1; 
+    //Traitement de l’arrivée sélectionnée dans le calendrier
+    if (LQ <= 1) {
+        //client entre et commence magasinage
+        NCE++;
+        //planifier un événement Fin Magasinage dans le calendrier *)
+        planifier_evt(ref,"FM", H+F2(alea));
+    }
+    else {
+        //client perdu 
+        NCP++;
+    }
+    //arrivée client suivant
+    i++; 
+    DA = H + F1(alea);
+    if ( DA[i] <= 720) { //l’arrivée se fait à temps
+        //planifier un événement arrivée dans le calendrier
+        planifier_evt(i,"A",DA);
+    }
+}
+
+
+// pour 2 caisses
+Fin-magasinage2 ( ref ) {
+    
+    if(C1 == 0 || C2== 0)
+    {
+      if(C1 == 0) C2 = ref;
+      else C2 = ref;
+      Planifier-evt ( ref , "FP" , H + F3(alea) );
+
+    }
+    else {
+       LQ = LQ + 1;
+       Insererfile (ref);
+    }
+    
+}
+
+// pour 3 caisses
+
+Fin-magasinage3 ( ref ) {
+    
+    if(C1 == 0 || C2 == 0 || C3 ==0)
+    {
+      if(C1 == 0) C1 = ref;
+      else if (C2 == 0) C2 = ref;
+      else C3 = ref;
+      Planifier-evt ( ref , "FP" , H + F3(alea) );
+
+    }
+    else {
+       LQ = LQ + 1;
+       Insererfile (ref);
+    }
+    
+}
+// pour 2 caisses
+ Fin-paiement2(ref) {
+   int J;
+   if (LQ = 0) {
+     if(C1 == ref) C1 =0;
+     else C2=0;
+   }
+   else {
+     J= file[0];
+     Supprimerfile(J);
+     LQ = LQ -1;
+     if(C1 == ref) C1 = J;
+     else C2 = J;
+     Planifier-evt ( J , "FP" , H + F3(alea) )  ;   
+   }
+ }
+
+
+
+ 
+// pour 3 caisses
+
+  Fin-paiement3(ref) {
+   var J;
+   if (LQ = 0) {
+     if(C1 == ref) C1 =0;
+     else if(C2 == ref) C2=0;
+     else C3 = 0;
+   }
+   eles {
+     J= file[0];
+     Supprimerfile(J);
+     LQ = LQ -1;
+     if(C1 == ref) C1 = J;
+     else if(C2 == ref) C2 = J;
+     else C3 = J;
+     Planifier-evt ( J , "FP" , H + F3(alea) ) ;   
+   }
+ }
 
 }
 
