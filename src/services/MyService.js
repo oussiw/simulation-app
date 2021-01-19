@@ -1,5 +1,9 @@
 class MyService {
-
+    calendar={
+        events:[],
+        H:0,
+        index:0
+    };
     getAleaTab = (IX, IY, IZ) => {
         let ix = IX;
         let iy = IY;
@@ -38,24 +42,41 @@ class MyService {
         });
     }
 
-    planifier_evenement = (ref, type, date, events) => {
-        events.push({reference: ref, type: type, date: date})
-        return events;
-    }
+    planifier_evenement = (ref, type, alea) => {
+        if(this.calendar.events.length===0){
+            this.calendar.H = this.selectionner_evenement(type,alea);
+            this.calendar.events.push({reference: ref, type: type, date: this.selectionner_evenement(type,alea)});
+        }
+        else{
+            this.calendar.H += this.selectionner_evenement(type,alea);
+            this.calendar.events.push({reference: ref, type: type, date: this.selectionner_evenement(type,alea)});
+        }
 
-    selectionner_evenement = (event) => {
+    }
+    selectionner_evenement = (type, alea) => {
         switch (type) {
             case "A":
-
-                break;
+                return this.F1(alea);
             case "FM":
-
-                break;
+                return this.F2(alea);
             case "FP":
-
-                break;
+                return this.F3(alea);
         }
     }
+
+    // selectionner_evenement = (ref, type, alea) => {
+    //     switch (type) {
+    //         case "A":
+    //
+    //             break;
+    //         case "FM":
+    //
+    //             break;
+    //         case "FP":
+    //
+    //             break;
+    //     }
+    // }
 
     // temps d'arrivée
     F1 = (alea) => {
@@ -67,8 +88,7 @@ class MyService {
         if (alea > 0.98 && alea <= 1) return 6;
     }
 
-
-// temps de magasinage
+    // temps de magasinage
     F2(alea) {
         if (alea >= 0 && alea < 0.1) return 2;
         if (alea >= 0.1 && alea < 0.3) return 4;
@@ -77,13 +97,24 @@ class MyService {
         if (alea > 0.9 && alea <= 1) return 10;
     }
 
-
-// temps passé à la caisse
+    // temps passé à la caisse
     F3 = (alea) => {
         if (alea >= 0 && alea < 0.2) return 1;
         if (alea >= 0.2 && alea <= 0.6) return 2;
         if (alea > 0.6 && alea <= 0.85) return 3;
         if (alea > 0.85 && alea <= 1) return 4;
+    }
+
+    arrivee=()=>{
+
+    }
+
+    fin_magasinage=()=>{
+
+    }
+
+    fin_paiement=()=>{
+
     }
 
 }
