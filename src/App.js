@@ -14,7 +14,7 @@ function App() {
       <h3>Simulation - App</h3><hr/>
       <button className="btn btn-outline-dark col-md-3"
               onClick={()=>{setDeuxCaissesHidden(!deuxCaissesHidden);
-                            console.log(MyService.getAleaTab(240,240,240))}
+                            console.log(MyService.effetuerSimulation(1,240,240,240))}
               }>Simuler deux caisses</button>
       <span className="col-md-1"></span>
       <button className="btn btn-outline-dark col-md-3"
