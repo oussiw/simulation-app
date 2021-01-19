@@ -25,7 +25,7 @@ class MyService{
         if ( IZ < 0 ) {IZ += 30323;}
         inter = ( ( IX / 30269) + ( IY / 30307) + ( IZ / 30323) );
         return ({
-            result:(inter - Math.floor(inter)),
+            result:(inter - Math.floor(inter)).toFixed(4),
             IXModifie: IX,
             IYModifie: IY,
             IZModifie: IZ
