@@ -2,8 +2,17 @@
 class MyService{
 
     getAleaTab=(IX, IY, IZ)=>{
-        let ix
-
+        let ix = IX;
+        let iy = IY;
+        let iz = IZ;
+        let aleas = [];
+        for(let i=0;i<100;i++){
+            aleas.push(this.getAlea(ix,iy,iz).result);
+            ix = this.getAlea(ix,iy,iz).IXModifie;
+            iy = this.getAlea(ix,iy,iz).IYModifie;
+            iz = this.getAlea(ix,iy,iz).IZModifie;
+        }
+        return aleas;
     }
     getAlea=(IX, IY, IZ)=>{
         let inter;
@@ -14,11 +23,14 @@ class MyService{
         if ( IX < 0 ) {IX += 30269;}
         if ( IY < 0 ) {IY += 30307;}
         if ( IZ < 0 ) {IZ += 30323;}
-        inter = ( ( IX / 30269. ) + ( IY / 30307. ) + ( IZ / 30323. ) ) ;
+        inter = ( ( IX / 30269) + ( IY / 30307) + ( IZ / 30323) );
         return ({
-        result:(inter - floor(inter)),
-    });
+            result:(inter - Math.floor(inter)),
+            IXModifie: IX,
+            IYModifie: IY,
+            IZModifie: IZ
+        });
     }
 
 }
-export default MyService;
+export default new MyService();

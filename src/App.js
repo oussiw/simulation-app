@@ -2,6 +2,7 @@ import './App.css';
 import {useState} from "react"
 import DeuxCaisses from "./components/DeuxCaisses";
 import TroisCaisses from "./components/TroisCaisses";
+import MyService from "./services/MyService";
 
 function App() {
 
@@ -12,7 +13,7 @@ function App() {
     <div className="container">
       <h3>Simulation - App</h3><hr/>
       <button className="btn btn-outline-dark col-md-3"
-              onClick={()=>setDeuxCaissesHidden(!deuxCaissesHidden)}>Simuler deux caisses</button>
+              onClick={()=>{setDeuxCaissesHidden(!deuxCaissesHidden);console.log(MyService.getAleaTab(240,240,240))}}>Simuler deux caisses</button>
       <span className="col-md-1"></span>
       <button className="btn btn-outline-dark col-md-3"
               onClick={()=>setTroisCaissesHidden(!troisCaissesHidden)}>Simuler trois caisses</button><br/><hr/>
