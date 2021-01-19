@@ -2,12 +2,12 @@ class MyService {
     calendar = {
         events: [],
         H: 0,
-        index: 0
-    };
-    H = 0;
-    LQ = 0;
-    NCE = 0;
-    NCP = 0;
+        i: 0,
+        LQ: 0,
+        NCE: 0,
+        NCP: 0
+    }
+
     getAleaTab = (IX, IY, IZ) => {
         let ix = IX;
         let iy = IY;
@@ -81,6 +81,7 @@ class MyService {
                 }
             }
         }
+        this.calendar.H = theEvent.date;
         this.calendar.events.splice(atIndex,1);
         return theEvent;
     }
@@ -113,7 +114,7 @@ class MyService {
 
 
 // arrivée
-    fonctionArrivee=(ref)=>{
+    fonctionArrivee=(ref,LQ,DA,NCE)=>{
         var i = 1;
         //Traitement de l’arrivée sélectionnée dans le calendrier
         if (LQ <= 1) {
@@ -132,11 +133,13 @@ class MyService {
             //planifier un événement arrivée dans le calendrier
             planifier_evt(i, "A", DA);
         }
+
+        return({})
     }
 
 
 // pour 2 caisses
-    finMagasinage2=(ref)=>{
+    finMagasinage2=(ref,C1,C2,LQ)=>{
 
         if (C1 == 0 || C2 == 0) {
             if (C1 == 0) C2 = ref;
@@ -151,7 +154,7 @@ class MyService {
     }
 
 // pour 3 caisses
-    finMagasinage3=(ref)=>{
+    finMagasinage3=(ref,C1,C2,C3,LQ)=>{
         if (C1 == 0 || C2 == 0 || C3 == 0) {
             if (C1 == 0) C1 = ref;
             else if (C2 == 0) C2 = ref;
@@ -166,7 +169,7 @@ class MyService {
     }
 
 // pour 2 caisses
-    finPaiement2=(ref)=>{
+    finPaiement2=(ref,LQ,C1,C2,J)=>{
         int
         J;
         if (LQ = 0) {
@@ -184,7 +187,7 @@ class MyService {
 
 
 // pour 3 caisses
-    finPaiement3=(ref)=>{
+    finPaiement3=(ref,LQ,C1,C2,C3)=>{
         var J;
         if (LQ = 0) {
             if (C1 == ref) C1 = 0;
