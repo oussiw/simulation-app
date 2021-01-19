@@ -46,18 +46,15 @@ class MyService {
         });
     }
 
-    planifier_evenement = (ref, type, alea) => {
-        if (this.calendar.events.length === 0) {
-            this.calendar.H = this.selectionner_evenement(type, alea);
-            this.calendar.events.push({reference: ref, type: type, date: this.selectionner_evenement(type, alea)});
-        } else {
-            this.calendar.H += this.selectionner_evenement(type, alea);
-            this.calendar.events.push({reference: ref, type: type, date: this.selectionner_evenement(type, alea)});
-        }
-
+    planifierEvenement = (ref, type, alea) => {
+        this.calendar.events.push({
+            reference: ref,
+            type: type,
+            date: this.calendar.H + this.getDateByType(type, alea)
+        });
     }
 
-    selectionner_evenement = (type, alea) => {
+    getDateByType = (type, alea) => {
         switch (type) {
             case "A":
                 return this.F1(alea);
@@ -68,20 +65,25 @@ class MyService {
         }
     }
 
-    // selectionner_evenement = (ref, type, alea) => {
-    //     switch (type) {
-    //         case "A":
-    //
-    //             break;
-    //         case "FM":
-    //
-    //             break;
-    //         case "FP":
-    //
-    //             break;
-    //     }
-    // }
-
+    selectionnerEvenement = (date)=>{
+        let theEvent = this.calendar.events[0];
+        let atIndex=0;
+        for(let i=0;i<this.calendar.events.length;i++){
+            if((this.calendar.events[i].date-date) < (theEvent.date-date)){
+                theEvent = this.calendar.events[i];
+            }
+            else if((this.calendar.events[i].date-date) === (theEvent.date-date)){
+                if(this.calendar.events[i].type==="A"){
+                    theEvent = this.calendar.events[i];
+                }
+                else if(this.calendar.events[i].type==="FM" && theEvent.type==="FP"){
+                    theEvent = this.calendar.events[i];
+                }
+            }
+        }
+        this.calendar.events.splice(atIndex,1);
+        return theEvent;
+    }
     // temps d'arrivée
     F1 = (alea) => {
         if (alea >= 0 && alea < 0.3) return 1;
@@ -111,8 +113,7 @@ class MyService {
 
 
 // arrivée
-    fonction_Arrivee=(ref)=>{
-
+    fonctionArrivee=(ref)=>{
         var i = 1;
         //Traitement de l’arrivée sélectionnée dans le calendrier
         if (LQ <= 1) {
@@ -135,7 +136,7 @@ class MyService {
 
 
 // pour 2 caisses
-    fin_magasinage2=(ref)=>{
+    finMagasinage2=(ref)=>{
 
         if (C1 == 0 || C2 == 0) {
             if (C1 == 0) C2 = ref;
@@ -150,7 +151,7 @@ class MyService {
     }
 
 // pour 3 caisses
-    fin_magasinage3=(ref)=>{
+    finMagasinage3=(ref)=>{
         if (C1 == 0 || C2 == 0 || C3 == 0) {
             if (C1 == 0) C1 = ref;
             else if (C2 == 0) C2 = ref;
@@ -165,7 +166,7 @@ class MyService {
     }
 
 // pour 2 caisses
-    fin_paiement2=(ref)=>{
+    finPaiement2=(ref)=>{
         int
         J;
         if (LQ = 0) {
@@ -183,7 +184,7 @@ class MyService {
 
 
 // pour 3 caisses
-    fin_paiement3=(ref)=>{
+    finPaiement3=(ref)=>{
         var J;
         if (LQ = 0) {
             if (C1 == ref) C1 = 0;
@@ -202,7 +203,7 @@ class MyService {
         }
     }
 
-    effetuer_sumulation = (nb_simulation, IX, IY, IZ, nb_caisses) => {
+    effetuerSimulation = (nb_simulation, IX, IY, IZ, nb_caisses) => {
 
         //Retour
     }
