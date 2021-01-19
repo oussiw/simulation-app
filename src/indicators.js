@@ -2,10 +2,7 @@ global.calendar = {
     events: [],
     H: 0
 }
-global.aleatab = {
-    tableau: [],
-    nothing:"nothing"
-}
+global.alea_tab= [];
 global.file = [];
 global.i = 1;
 global.LQ = 0;

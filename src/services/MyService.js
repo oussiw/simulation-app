@@ -1,12 +1,10 @@
 import '../indicators.js';
 
 class MyService {
+
     getAleaTab = () => {
         for (let i = 0; i < 99; i++) {
-            //global.C1 = global.C1+1
-            //global.aleatab.tableau.push("Alea Tab")
-            //console.log("Hello Calendar "+global.aleatab.tableau)
-            global.aleatab.tableau.push(this.getAlea());
+            global.alea_tab.push(this.getAlea());
         }
     }
 
@@ -25,6 +23,7 @@ class MyService {
         if (IZ < 0) {
             IZ += 30323;
         }
+
         global.IX = IX;
         global.IY = IY;
         global.IZ = IZ;
@@ -39,17 +38,6 @@ class MyService {
             date: date
         });
     }
-
-    // getDateByType = (type, alea) => {
-    //     switch (type) {
-    //         case "A":
-    //             return this.F1(alea);
-    //         case "FM":
-    //             return this.F2(alea);
-    //         case "FP":
-    //             return this.F3(alea);
-    //     }
-    // }
 
     selectionnerEvenement = ()=>{
         let theEvent = global.calendar.events[0];
@@ -69,7 +57,7 @@ class MyService {
         }
         global.calendar.H = theEvent.date;
         global.calendar.events.splice(atIndex,1);
-        return theEvent
+        return theEvent;
     }
 
     // temps d'arrivée
@@ -115,24 +103,15 @@ class MyService {
     }
 
     // pour 2 caisses
-    finMagasinage2 =(C1,C2,LQ,ref,calendar,alea,file)=>{
-        let tempCalendar = calendar
-        if (C1 === 0 || C2 === 0) {
-            if (C1 === 0) C2 = ref;
-            else C2 = ref;
-            tempCalendar = this.planifierEvenement(ref, "FP",calendar.H + this.F3(alea.fp),calendar);
+    finMagasinage2 =(ref,alea)=>{
+        if (global.C1 === 0 || global.C2 === 0) {
+            if (global.C1 === 0) global.C2 = ref;
+            else global.C2 = ref;
+            this.planifierEvenement(ref, "FP",global.calendar.H + this.F3(alea.fp));
         } else {
-            LQ = LQ + 1;
-            file.push(ref);
-            //this.insererfile(ref,file);//retourner la file push
+            global.LQ = global.LQ + 1;
+            global.file.push(ref);
         }
-        return ({
-            C1:C1,
-            C2:C2,
-            LQ:LQ,
-            calendar:tempCalendar,
-            file:file
-        });
     }
 
     // pour 3 caisses
@@ -185,9 +164,8 @@ class MyService {
     //     }
     // }
     effetuerSimulation = (nb_simulation, IX, IY, IZ) => {
-        console.log(this.getAleaTab(IX,IY,IZ))
-        //global.aleatab.tableau = this.getAleaTab(IX,IY,IZ)
-        console.log("Change here "+global.aleatab.tableau)
+
+        this.getAleaTab(IX,IY,IZ)
         let alea = this.findAlea(global.i);
         this.planifierEvenement(global.i,"A",this.F1(alea.a));
         global.calendar.H = this.F1(alea.a);
@@ -222,17 +200,15 @@ class MyService {
     findAlea =(reference_client)=>{
         let alea = {a:0,fm:0,fp:0};
         let indice_client = 0;
-        console.log("Tableau "+global.aleatab.nothing)
-        let length = global.aleatab.tableau.length
-        for(let i=0; i < length; i++){
+        for(let i=0; i < global.alea_tab.length; i++){
             if(i%3===0){
                 indice_client = 1;
             }
             if(indice_client === reference_client){
-                if(i%3===0) alea.a = global.aleatab.tableau[i];
-                else if(i%3===1) alea.fm = global.aleatab.tableau[i];
+                if(i%3===0) alea.a = global.alea_tab[i];
+                else if(i%3===1) alea.fm = global.alea_tab[i];
                 else if(i%3===2) {
-                    alea.fp = global.aleatab.tableau[i];
+                    alea.fp = global.alea_tab[i];
                     break;
                 }
             }
