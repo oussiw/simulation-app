@@ -1,23 +1,23 @@
-import logo from './logo.svg';
 import './App.css';
+import {useState} from "react"
+import DeuxCaisses from "./components/DeuxCaisses";
+import TroisCaisses from "./components/TroisCaisses";
 
 function App() {
+
+  const [deuxCaissesHidden,setDeuxCaissesHidden] = useState(true)
+  const [troisCaissesHidden,setTroisCaissesHidden] = useState(true)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <h3>Simulation - App</h3><hr/>
+      <button className="btn btn-outline-dark col-md-3"
+              onClick={()=>setDeuxCaissesHidden(!deuxCaissesHidden)}>Simuler deux caisses</button>
+      <span className="col-md-1"></span>
+      <button className="btn btn-outline-dark col-md-3"
+              onClick={()=>setTroisCaissesHidden(!troisCaissesHidden)}>Simuler trois caisses</button><br/><hr/>
+      {!deuxCaissesHidden && <DeuxCaisses/>}
+      {!troisCaissesHidden && <TroisCaisses/>}
     </div>
   );
 }
