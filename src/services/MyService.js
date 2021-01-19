@@ -3,7 +3,6 @@ import '../indicators.js';
 class MyService {
     getAleaTab = () => {
         for (let i = 0; i < 99; i++) {
-            if(i===0) global.alea_tab = [];
             global.alea_tab.push(this.getAlea());
         }
     }
