@@ -163,15 +163,14 @@ class MyService {
     //         this.planifierEvenement(J, "FP", H + this.F3(alea));
     //     }
     // }
-    effetuerSimulation = (nb_simulation, IX, IY, IZ) => {
-
+    effetuerSimulation = (IX, IY, IZ) => {
         this.getAleaTab(IX,IY,IZ)
         let alea = this.findAlea(global.i);
         this.planifierEvenement(global.i,"A",this.F1(alea.a));
         global.calendar.H = this.F1(alea.a);
-
         while (global.calendar.events.length!==0){
-            let selectedEvent = this.selectionnerEvenement();;
+            let selectedEvent = this.selectionnerEvenement();
+            console.log(selectedEvent)
             alea = this.findAlea(selectedEvent.reference);
             switch (selectedEvent.type) {
                 case "A":
@@ -184,8 +183,16 @@ class MyService {
                     this.finPaiement2(selectedEvent.reference,alea);
                     break;
             }
+            console.log({
+                NCE:global.NCE,
+                NCP:global.NCP,
+                i:global.i,
+                LQ:global.LQ,
+                C1:global.C1,
+                C2:global.C2,
+                file:global.file
+            })
         }
-
         return ({
             NCE:global.NCE,
             NCP:global.NCP,
