@@ -287,8 +287,8 @@ class MyService {
                     break;
                 case "FM":
                     // console.log("FM");
-                    temp = this.finMagasinage2(C1, C2, LQ, selectedEvent.reference, calendar, alea, file, H, list);
-                    // temp = this.finMagasinage3(C1, C2,C3, LQ, selectedEvent.reference, calendar, alea, file, H, list);
+                    //temp = this.finMagasinage2(C1, C2, LQ, selectedEvent.reference, calendar, alea, file, H, list);
+                    temp = this.finMagasinage3(C1, C2,C3, LQ, selectedEvent.reference, calendar, alea, file, H, list);
                     LQ = temp.LQ;
                     calendar = temp.calendar;
                     C1 = temp.C1;
@@ -299,8 +299,8 @@ class MyService {
                     break;
                 case "FP":
                     // console.log("FP")
-                    temp = this.finPaiement2(C1, C2, LQ, selectedEvent.reference, calendar, alea, file, H, list);
-                    // temp = this.finPaiement3(C1, C2, C3, LQ, selectedEvent.reference, calendar, alea, file, H, list);
+                    //temp = this.finPaiement2(C1, C2, LQ, selectedEvent.reference, calendar, alea, file, H, list);
+                    temp = this.finPaiement3(C1, C2, C3, LQ, selectedEvent.reference, calendar, alea, file, H, list);
                     LQ = temp.LQ;
                     calendar = temp.calendar;
                     C1 = temp.C1;
@@ -312,17 +312,14 @@ class MyService {
             }
             // int++;
         }
-        this.calculerTSmoy(list, NCE);
-        this.fonctionTATmoy(list)
+        let TSmy =this.calculerTSmoy(list, NCE);
+        let TATmoy = this.fonctionTATmoy(list)
 
         return ({
             NCE: NCE,
             NCP: NCP,
-            i: i,
-            LQ: LQ,
-            C1: C1,
-            C2: C2,
-            file: file
+            TSmy:TSmy,
+            TATmoy:TATmoy
         })
     }
 
@@ -359,7 +356,8 @@ class MyService {
                 cpt++;
             }
         })
-        console.log("Temps de sejour moyen " + Math.floor(s / cpt) + " min");
+        return Math.floor(s / cpt);
+        //console.log("Temps de sejour moyen " + Math.floor(s / cpt) + " min");
         //return Math.floor(s / 6);
     }
 
@@ -374,7 +372,12 @@ class MyService {
                 cpt++;
             }
         })
-        console.log("Temps d'attente moyen "+ s/cpt)
+        return Math.floor(s/cpt);
+        //console.log("Temps d'attente moyen "+ Math.floor(s/cpt))
+    }
+
+    fonctionTauC1 =()=>{
+
     }
 
 }
