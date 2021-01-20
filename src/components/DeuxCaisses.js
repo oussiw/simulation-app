@@ -25,7 +25,7 @@ class DeuxCaisses extends Component {
                 <table className="table">
                     <thead className="thead-dark">
                     <tr>
-                        <th className="text-center">Numero Simulation</th>
+                        <th className="text-center">No Simulation</th>
                         <th className="text-center">NCE</th>
                         <th className="text-center">NCP</th>
                         <th className="text-center">TATmoy</th>

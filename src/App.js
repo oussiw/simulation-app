@@ -30,24 +30,27 @@ class App extends Component {
                 <h3>Simulation - App</h3>
                 <hr/>
                 <div className="form-row">
-                    <span className="col-md-1"></span>
-                    <label>Nombre de simulations</label>
-                    <input className="form form-control col-md-2" placeholder="Nbr" name="nb" value={this.state.nb}
-                           onChange={this.onChangeHandler}/>
-                    <span className="col-md-1"></span>
-                    <label>IX</label>
-                    <input className="form form-control col-md-2" placeholder="IX" name="IX"  value={this.state.IX}
-                           onChange={this.onChangeHandler}/>
-                    <span className="col-md-1"></span>
-                    <label>IY</label>
-                    <input className="form form-control col-md-2" placeholder="IY" name="IY" value={this.state.IY}
-                           onChange={ this.onChangeHandler}/>
-                    <span className="col-md-1"></span>
-                    <label>IZ</label>
-                    <input className="form form-control col-md-2" placeholder="IZ" name="IZ" value={this.state.IZ}
-                           onChange={ this.onChangeHandler}/>
+                    <div className="form-group">
+                        <label for="nb">Nombre de simulations:</label>
+                        <input className="form form-control col-md-11" id="nb" placeholder="Nbr" name="nb" value={this.state.nb}
+                               onChange={this.onChangeHandler}/>
+                    </div>
+                    <div className="form-group">
+                        <label for="ix">IX:</label>
+                        <input className="form form-control col-md-11" id="ix" placeholder="IX" name="IX"  value={this.state.IX}
+                               onChange={this.onChangeHandler}/>
+                    </div>
+                    <div className="form-group">
+                        <label for="iy">IY:</label>
+                        <input className="form form-control col-md-11" id="iy" placeholder="IY" name="IY" value={this.state.IY}
+                               onChange={ this.onChangeHandler}/>
+                    </div>
+                    <div className="form-group">
+                        <label for="iz">IZ:</label>
+                        <input className="form form-control col-md-11" id="iz" placeholder="IZ" name="IZ" value={this.state.IZ}
+                               onChange={ this.onChangeHandler}/>
+                    </div>
                 </div>
-                <br/>
                 <button className="btn btn-outline-dark col-md-3"
                         onClick={() => {
                             if(!this.state.troisCaissesHidden){

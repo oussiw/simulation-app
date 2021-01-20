@@ -208,7 +208,7 @@ class MyService {
             let DP = H;
             list[ref - 1].push(DP) // ajouter Date de fin de paiement
             list[J-1].push(H);
-            let v = J-1
+            // let v = J-1
             tempCalendar = this.planifierEvenement(J, "FP", H + this.F3(this.findAlea(J,alea_tab).fp), calendar);
         }
         return ({
@@ -300,7 +300,7 @@ class MyService {
             let C2 = 0;
             let tauxC1 = 0;
             let tauxC2 = 0;
-            let C3 = 0;
+            // let C3 = 0;
             let list = [];
             alea_tab = this.getAleaTab(IX1, IY1, IZ1);
             let alea = this.findAlea(i, alea_tab);
@@ -331,7 +331,7 @@ class MyService {
                         calendar = temp.calendar;
                         C1 = temp.C1;
                         C2 = temp.C2;
-                        C3 = temp.C3;
+                        // C3 = temp.C3;
                         file = temp.file;
                         list = temp.list
                         break;
@@ -344,7 +344,7 @@ class MyService {
                         C2 = temp.C2;
                         tauxC1 = temp.tauxC1;
                         tauxC2 = temp.tauxC2;
-                        C3 = temp.C3;
+                        // C3 = temp.C3;
                         file = temp.file;
                         list = temp.list;
                         break;
@@ -401,7 +401,7 @@ class MyService {
             while (calendar.length !== 0) {
                 let temporary = this.selectionnerEvenement(calendar, H);
                 let selectedEvent = temporary.selectedEvent;
-                console.log(selectedEvent)
+                // console.log(selectedEvent)
                 calendar = temporary.calendar;
                 H = temporary.H;
                 alea = this.findAlea(selectedEvent.reference, alea_tab);
@@ -425,7 +425,8 @@ class MyService {
                         C2 = temp.C2;
                         C3 = temp.C3;
                         file = temp.file;
-                        list = temp.list
+                        list = temp.list;
+                        console.log(list)
                         break;
                     case "FP":
                         temp = this.finPaiement3(C1, C2, C3, tauxC1, tauxC2, tauxC3, LQ, selectedEvent.reference, calendar, alea, alea_tab,file, H, list);
@@ -439,6 +440,7 @@ class MyService {
                         tauxC3 = temp.tauxC3;
                         file = temp.file;
                         list = temp.list;
+                        // console.log(list)
                         break;
                 }
             }
@@ -500,9 +502,7 @@ class MyService {
         let s = 0;
         let cpt = 0;
         list.map(e=>{
-            // console.log(e)
             if(!isNaN(e[2]) && !isNaN(e[4])){
-                // console.log("e "+e)
                 s = s + (e[4]-e[2])
                 cpt++;
             }
