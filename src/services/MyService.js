@@ -256,8 +256,18 @@ class MyService {
 
     effetuerSimulation2 = (nb_simulations,IX, IY, IZ) => {
         let outputs = [];
+        let IX1 = IX
+        let IY1 = IY
+        let IZ1 = IZ
         for(let k=0;k < nb_simulations;k++){
             let calendar = []
+            if(k!==0){
+                let temp99 =this.calculerGerme(IX1,IY1,IZ1)
+                IX1 = temp99.IX
+                IY1 = temp99.IY
+                IZ1 = temp99.IZ
+                console.log(temp99)
+            }
             let H = 0;
             let file = [];
             let alea_tab = [];
@@ -271,7 +281,7 @@ class MyService {
             let tauxC2 = 0;
             let C3 = 0;
             let list = [];
-            alea_tab = this.getAleaTab(IX, IY, IZ);
+            alea_tab = this.getAleaTab(IX1, IY1, IZ1);
             let alea = this.findAlea(i, alea_tab);
             calendar = this.planifierEvenement(i, "A", this.F1(alea.a), calendar);
             H = this.F1(alea.a);
@@ -279,11 +289,11 @@ class MyService {
             while (calendar.length !== 0) {
                 let temporary = this.selectionnerEvenement(calendar, H);
                 let selectedEvent = temporary.selectedEvent;
-                console.log("Event:")
-                console.log(selectedEvent);
+                //console.log("Event:")
+                //console.log(selectedEvent);
                 calendar = temporary.calendar;
-                console.log("Calendar:")
-                console.log(calendar);
+                //console.log("Calendar:")
+                //console.log(calendar);
                 H = temporary.H;
                 alea = this.findAlea(selectedEvent.reference, alea_tab);
                 // console.log("Alea:")
@@ -331,7 +341,7 @@ class MyService {
             let TSmy =this.calculerTSmoy(list, NCE);
             let TATmoy = this.fonctionTATmoy(list);
 
-            console.log("i: "+i)
+            //console.log("i: "+i)
             outputs.push({
                 index:k,
                 NCE: NCE,
@@ -369,11 +379,11 @@ class MyService {
             while (calendar.length !== 0) {
                 let temporary = this.selectionnerEvenement(calendar, H);
                 let selectedEvent = temporary.selectedEvent;
-                console.log("Event:")
-                console.log(selectedEvent);
+                //console.log("Event:")
+                //console.log(selectedEvent);
                 calendar = temporary.calendar;
-                console.log("Calendar:")
-                console.log(calendar);
+                //console.log("Calendar:")
+                //console.log(calendar);
                 H = temporary.H;
                 alea = this.findAlea(selectedEvent.reference, alea_tab);
                 // console.log("Alea:")
@@ -486,6 +496,16 @@ class MyService {
     fonctionTauC1 =()=>{
 
     }
+
+    calculerGerme = (IX, IY, IZ) => {
+
+        return {
+            IX :IX+5,
+            IY: IY+5,
+            IZ: IZ+5
+        };
+    }
+
 
 }
 

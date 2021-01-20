@@ -12,7 +12,7 @@ class DeuxCaisses extends Component {
 
     componentDidMount() {
         this.setState({
-            outputs:MyService.effetuerSimulation2(1,240, 240, 240)
+            outputs:MyService.effetuerSimulation2(2,240, 240, 240)
         })
 
     }
@@ -36,6 +36,7 @@ class DeuxCaisses extends Component {
                     </thead>
                     <tbody>
                     {this.state.outputs.map(output=>{
+
                         return(<tr>
                             <td className="text-center">{output.index+1}</td>
                             <td className="text-center">{output.NCE}</td>
