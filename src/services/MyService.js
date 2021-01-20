@@ -5,7 +5,7 @@ class MyService {
         let IX = IX1;
         let IY = IY1;
         let IZ = IZ1;
-        for (let i = 0; i < 99; i++) {
+        for (let i = 0; i < 1071; i++) {
             let temp = this.getAlea(IX,IY,IZ);
             tableau.push(temp.result);
             IX = temp.IXModifie;
@@ -127,12 +127,10 @@ class MyService {
 
     // pour 2 caisses
     finMagasinage2 =(C1,C2,LQ,ref,calendar,alea,file,H)=>{
-        console.log(calendar)
         let tempCalendar = calendar
         if (C1 === 0 || C2 === 0) {
             if (C1 === 0) C2 = ref;
             else C2 = ref;
-            console.log(this.planifierEvenement(ref, "FP",H + this.F3(alea.fp),calendar))
             tempCalendar = this.planifierEvenement(ref, "FP",H + this.F3(alea.fp),calendar);
         } else {
             LQ = LQ + 1;
@@ -216,12 +214,12 @@ class MyService {
         let C1 = 0;
         let C2 = 0;
         alea_tab = this.getAleaTab(IX,IY,IZ);
+        console.log(alea_tab)
         let alea = this.findAlea(i, alea_tab);
         calendar = this.planifierEvenement(i,"A",this.F1(alea.a),calendar);
         H = this.F1(alea.a);
         let int = 0;
         while (calendar.length !== 0){
-            // console.log(calendar);
             let temporary = this.selectionnerEvenement(calendar,H);
             let selectedEvent = temporary.selectedEvent;
             console.log(selectedEvent)
@@ -229,7 +227,6 @@ class MyService {
             H = temporary.H;
             alea = this.findAlea(selectedEvent.reference,alea_tab);
             let temp;
-            // console.log(calendar);
             switch (selectedEvent.type) {
                 case "A":
                     temp = this.fonctionArrivee(LQ,NCE,NCP,selectedEvent.reference,alea,i,alea_tab,calendar,H);
@@ -238,7 +235,7 @@ class MyService {
                     NCE = temp.NCE;
                     NCP = temp.NCP;
                     i = temp.i;
-                    console.log(calendar)
+                    console.log("A")
                     break;
                 case "FM":
                     temp = this.finMagasinage2(C1,C2,LQ,selectedEvent.reference,calendar,alea,file,H);
@@ -261,6 +258,7 @@ class MyService {
             }
             int++;
         }
+        console.log(calendar)
 
         return ({
             NCE:NCE,
@@ -274,12 +272,15 @@ class MyService {
     }
 
     findAlea =(reference_client,aleas_tab)=>{
-       
-        let alea = {a:0,fm:0,fp:0};
+        let alea = {
+            a:0,
+            fm:0,
+            fp:0
+        };
         let indice_client = 0;
         for(let i=0; i < aleas_tab.length; i++){
             if(i%3===0){
-                indice_client = 1;
+                indice_client += 1;
             }
             if(indice_client === reference_client){
                 if(i%3===0) alea.a = aleas_tab[i];
