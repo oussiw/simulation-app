@@ -12,7 +12,7 @@ class DeuxCaisses extends Component {
 
     componentDidMount() {
         this.setState({
-            outputs:MyService.effetuerSimulation2(2,240, 240, 240)
+            outputs:MyService.effetuerSimulation2(1,240, 240, 240)
         })
 
     }
@@ -42,8 +42,8 @@ class DeuxCaisses extends Component {
                             <td className="text-center">{output.NCP}</td>
                             <td className="text-center">{output.TATmoy} min</td>
                             <td className="text-center">{output.TSmy} min</td>
-                            <td className="text-center">0</td>
-                            <td className="text-center">0</td>
+                            <td className="text-center">{output.tauxC1.toFixed(2)}</td>
+                            <td className="text-center">{output.tauxC2.toFixed(2)}</td>
                         </tr>);
                     })}
                     </tbody>
