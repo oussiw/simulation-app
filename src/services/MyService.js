@@ -222,7 +222,8 @@ class MyService {
         while (calendar.length !== 0){
             let temporary = this.selectionnerEvenement(calendar,H);
             let selectedEvent = temporary.selectedEvent;
-            console.log(selectedEvent)
+            console.log(selectedEvent);
+            console.log(LQ);
             calendar = temporary.calendar;
             H = temporary.H;
             alea = this.findAlea(selectedEvent.reference,alea_tab);
@@ -244,7 +245,8 @@ class MyService {
                     C1 = temp.C1;
                     C2 = temp.C2;
                     file = temp.file;
-                    console.log("FM")
+                    console.log("FM");
+
                     break;
                 case "FP":
                     temp = this.finPaiement2(C1,C2,LQ,selectedEvent.reference,calendar,alea,file,H);
