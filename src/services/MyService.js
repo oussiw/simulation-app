@@ -5,7 +5,7 @@ class MyService {
         let IX = IX1;
         let IY = IY1;
         let IZ = IZ1;
-        for (let i = 0; i < 1500; i++) {
+        for (let i = 0; i < 3000; i++) {
             let temp = this.getAlea(IX, IY, IZ);
             tableau.push(temp.result);
             IX = temp.IXModifie;
@@ -135,11 +135,9 @@ class MyService {
     // pour 2 caisses
     finMagasinage2 = (C1, C2, LQ, ref, calendar, alea, file, H, list) => {
         let tempCalendar = calendar
-        //console.log("C1 = "+C1)
         if (C1 === 0 || C2 === 0) {
             if (C1 === 0) C1 = ref;
             else C2 = ref;
-            // console.log("H de FP de:"+ref+" est "+H)
             tempCalendar = this.planifierEvenement(ref, "FP", H + this.F3(alea.fp), calendar);
         } else {
             LQ = LQ + 1;
@@ -158,19 +156,30 @@ class MyService {
     }
 
     // pour 3 caisses
-    // finMagasinage3=(ref,C1,C2,C3,LQ)=>{
-    //     if (C1 == 0 || C2 == 0 || C3 == 0) {
-    //         if (C1 == 0) C1 = ref;
-    //         else if (C2 == 0) C2 = ref;
-    //         else C3 = ref;
-    //         this.planifierEvenement(ref, "FP", H + F3(alea));
-    //
-    //     } else {
-    //         LQ = LQ + 1;
-    //         this.insererfile(ref);
-    //     }
-    //
-    // }
+    finMagasinage3=(C1, C2, C3, LQ, ref, calendar, alea, file, H, list)=>{
+        let tempCalendar = calendar;
+        if (C1 === 0 || C2 === 0 || C3 === 0) {
+            if (C1 === 0) C1 = ref;
+            else if (C2 === 0) C2 = ref;
+            else C3 = ref;
+            tempCalendar = this.planifierEvenement(ref, "FP", H + this.F3(alea.fp), calendar);
+        }
+        else {
+            LQ = LQ + 1;
+            file.push(ref);
+        }
+        let DEQ = H;
+        list[ref - 1].push(DEQ);
+        return ({
+            C1: C1,
+            C2: C2,
+            C3: C3,
+            LQ: LQ,
+            calendar: tempCalendar,
+            file: file,
+            list: list
+        });
+    }
 
     // pour 2 caisses
     finPaiement2 = (C1, C2, LQ, ref, calendar, alea, file, H, list) => {
@@ -189,13 +198,8 @@ class MyService {
             else C2 = J;
             let DP = H;
             list[ref - 1].push(DP) // ajouter Date de fin de paiement
-            // console.log(list)
             list[J-1].push(H);
-            // console.log(list)
             let v = J-1
-            // console.log("J-1 "+v)
-            // console.log("List "+list)
-            // console.log("H de FP de:"+J+" est "+H)
             tempCalendar = this.planifierEvenement(J, "FP", H + this.F3(alea.fp), calendar);
         }
         return ({
@@ -209,23 +213,35 @@ class MyService {
     }
 
     // pour 3 caisses
-    // finPaiement3=(ref,LQ,C1,C2,C3,H)=>{
-    //     var J;
-    //     if (LQ = 0) {
-    //         if (C1 == ref) C1 = 0;
-    //         else if (C2 == ref) C2 = 0;
-    //         else C3 = 0;
-    //     }
-    //     else {
-    //         J = file[0];
-    //         this.Supprimerfile(J);
-    //         LQ = LQ - 1;
-    //         if (C1 == ref) C1 = J;
-    //         else if (C2 == ref) C2 = J;
-    //         else C3 = J;
-    //         this.planifierEvenement(J, "FP", H + this.F3(alea));
-    //     }
-    // }
+    finPaiement3 = (C1, C2, C3, LQ, ref, calendar, alea, file, H, list) => {
+        let tempCalendar = calendar;
+        if (LQ === 0) {
+            if (C1 === ref) C1 = 0;
+            else if (C2 === ref) C2 = 0;
+            else C3 = 0;
+        }
+        else {
+            let J = file[0];
+            file.shift();
+            LQ = LQ - 1;
+            if (C1 === ref) C1 = J;
+            else if (C2 === ref) C2 = J;
+            else C3 = J;
+            let DP = H;
+            list[ref - 1].push(DP) // ajouter Date de fin de paiement
+            list[J-1].push(H);
+            tempCalendar = this.planifierEvenement(J, "FP", H + this.F3(alea.fp), calendar);
+        }
+        return ({
+            C1: C1,
+            C2: C2,
+            C3: C3,
+            LQ: LQ,
+            calendar: tempCalendar,
+            file: file,
+            list: list
+        })
+    }
 
     effetuerSimulation = (IX, IY, IZ) => {
         let calendar = []
@@ -238,12 +254,13 @@ class MyService {
         let NCE = 0;
         let C1 = 0;
         let C2 = 0;
+        let C3 = 0;
         let list = [];
         alea_tab = this.getAleaTab(IX, IY, IZ);
         let alea = this.findAlea(i, alea_tab);
         calendar = this.planifierEvenement(i, "A", this.F1(alea.a), calendar);
         H = this.F1(alea.a);
-        let int = 0;
+        // let int = 0;
         while (calendar.length !== 0) {
             let temporary = this.selectionnerEvenement(calendar, H);
             let selectedEvent = temporary.selectedEvent;
@@ -271,31 +288,32 @@ class MyService {
                 case "FM":
                     // console.log("FM");
                     temp = this.finMagasinage2(C1, C2, LQ, selectedEvent.reference, calendar, alea, file, H, list);
+                    // temp = this.finMagasinage3(C1, C2,C3, LQ, selectedEvent.reference, calendar, alea, file, H, list);
                     LQ = temp.LQ;
                     calendar = temp.calendar;
                     C1 = temp.C1;
                     C2 = temp.C2;
+                    C3 = temp.C3;
                     file = temp.file;
                     list = temp.list
                     break;
                 case "FP":
                     // console.log("FP")
                     temp = this.finPaiement2(C1, C2, LQ, selectedEvent.reference, calendar, alea, file, H, list);
+                    // temp = this.finPaiement3(C1, C2, C3, LQ, selectedEvent.reference, calendar, alea, file, H, list);
                     LQ = temp.LQ;
                     calendar = temp.calendar;
                     C1 = temp.C1;
                     C2 = temp.C2;
+                    C3 = temp.C3;
                     file = temp.file;
                     list = temp.list;
                     break;
             }
-            int++;
-
-
+            // int++;
         }
         this.calculerTSmoy(list, NCE);
         this.fonctionTATmoy(list)
-        //console.log(calendar)
 
         return ({
             NCE: NCE,
@@ -357,10 +375,7 @@ class MyService {
             }
         })
         console.log("Temps d'attente moyen "+ s/cpt)
-
-
     }
-
 
 }
 
