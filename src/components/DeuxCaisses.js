@@ -40,7 +40,7 @@ class DeuxCaisses extends Component {
                     this.setState({isChartHidden:false,data:this.createMap()})
                 }}>Dessiner graphe</button>
                 <br/><br/>
-                {!this.state.isChartHidden && <Charts max={20} color={"red"} title={"Simulation de deux caisses"}  data={this.state.data}/>}
+                {!this.state.isChartHidden && <Charts max={20} color={"red"} title={"Simulation de deux caisses - NCP"}  data={this.state.data}/>}
                 <hr/>
                 <table className="table">
                     <thead className="thead-dark">

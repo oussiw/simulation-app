@@ -40,7 +40,7 @@ class TroisCaisses extends Component {
                     this.setState({isChartHidden:false,data:this.createMap()})
                 }}>Dessiner graphe</button>
                 <br/><br/>
-                {!this.state.isChartHidden && <Charts max={3} color={"red"} title={"Simulation de trois caisses"}  data={this.state.data}/>}
+                {!this.state.isChartHidden && <Charts max={3} color={"red"} title={"Simulation de trois caisses - NCP"}  data={this.state.data}/>}
                 <hr/>
                 <hr/>
                 <table className="table">
