@@ -32,23 +32,23 @@ class App extends Component {
                 <div className="form-row">
                     <div className="form-group">
                         <label for="nb">Nombre de simulations:</label>
-                        <input className="form form-control col-md-11" id="nb" placeholder="Nbr" name="nb" value={this.state.nb}
-                               onChange={this.onChangeHandler}/>
+                        <input className="form form-control col-md-11" id="nb" placeholder="Nbr" name="nb"
+                               onChange={this.onChangeHandler} required/>
                     </div>
                     <div className="form-group">
                         <label for="ix">IX:</label>
-                        <input className="form form-control col-md-11" id="ix" placeholder="IX" name="IX"  value={this.state.IX}
-                               onChange={this.onChangeHandler}/>
+                        <input className="form form-control col-md-11" id="ix" placeholder="IX" name="IX"
+                               onChange={this.onChangeHandler} required/>
                     </div>
                     <div className="form-group">
                         <label for="iy">IY:</label>
-                        <input className="form form-control col-md-11" id="iy" placeholder="IY" name="IY" value={this.state.IY}
-                               onChange={ this.onChangeHandler}/>
+                        <input className="form form-control col-md-11" id="iy" placeholder="IY" name="IY"
+                               onChange={ this.onChangeHandler} required/>
                     </div>
                     <div className="form-group">
                         <label for="iz">IZ:</label>
-                        <input className="form form-control col-md-11" id="iz" placeholder="IZ" name="IZ" value={this.state.IZ}
-                               onChange={ this.onChangeHandler}/>
+                        <input className="form form-control col-md-11" id="iz" placeholder="IZ" name="IZ"
+                               onChange={ this.onChangeHandler} required/>
                     </div>
                 </div>
                 <button className="btn btn-outline-dark col-md-3"

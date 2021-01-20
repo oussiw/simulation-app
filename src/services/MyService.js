@@ -156,7 +156,7 @@ class MyService {
     }
 
     // pour 3 caisses
-    finMagasinage3=(C1, C2, C3, LQ, ref, calendar, alea, file, H, list)=>{
+    finMagasinage3=(C1, C2, C3, LQ, ref, calendar, alea, file, H, list,listClient)=>{
         let tempCalendar = calendar;
         if (C1 === 0 || C2 === 0 || C3 === 0) {
             if (C1 === 0) C1 = ref;
@@ -167,7 +167,10 @@ class MyService {
         else {
             LQ = LQ + 1;
             file.push(ref);
+
         }
+        let client = {ref:ref,DEQ:H,DSQ:0};
+        listClient.push(client)
         let DEQ = H;
         list[ref - 1].push(DEQ);
         return ({
@@ -177,7 +180,8 @@ class MyService {
             LQ: LQ,
             calendar: tempCalendar,
             file: file,
-            list: list
+            list: list,
+            listClient:listClient
         });
     }
 
@@ -224,7 +228,7 @@ class MyService {
     }
 
     // pour 3 caisses
-    finPaiement3 = (C1, C2, C3, tauxC1, tauxC2, tauxC3, LQ, ref, calendar, alea,alea_tab, file, H, list) => {
+    finPaiement3 = (C1, C2, C3, tauxC1, tauxC2, tauxC3, LQ, ref, calendar, alea,alea_tab, file, H, list,listClient) => {
         let tempCalendar = calendar;
         if (LQ === 0) {
             if (C1 === ref) {
@@ -260,7 +264,10 @@ class MyService {
             list[ref - 1].push(DP) // ajouter Date de fin de paiement
             list[J-1].push(H);
             tempCalendar = this.planifierEvenement(J, "FP", H + this.F3(this.findAlea(J,alea_tab).fp), calendar);
+
         }
+        console.log(this.findClient(ref,listClient))
+        listClient[this.findClient(ref,listClient)].DSQ = H;
         return ({
             C1: C1,
             C2: C2,
@@ -271,9 +278,20 @@ class MyService {
             LQ: LQ,
             calendar: tempCalendar,
             file: file,
-            list: list
+            list: list,
+            listClient:listClient
         })
     }
+
+    findClient =(ref,listCLient)=>{
+        for(let i=0;i<listCLient.length;i++){
+            if(listCLient[i].ref===ref){
+                return i;
+            }
+        }
+    }
+
+
 
     effetuerSimulation2 = (nb_simulations,IX, IY, IZ) => {
         let outputs = [];
@@ -365,6 +383,7 @@ class MyService {
         }
         return (outputs)
     }
+    // somme (DSQ-DEQ)/NCE
 
     effetuerSimulation3 = (nb_simulations,IX, IY, IZ) => {
         let outputs = [];
@@ -393,6 +412,7 @@ class MyService {
             let tauxC2 = 0;
             let tauxC3 = 0;
             let list = [];
+            let listClient = [];
             alea_tab = this.getAleaTab(IX1, IY1, IZ1);
             let alea = this.findAlea(i, alea_tab);
             calendar = this.planifierEvenement(i, "A", this.F1(alea.a), calendar);
@@ -418,7 +438,7 @@ class MyService {
                         i = temp.i;
                         break;
                     case "FM":
-                        temp = this.finMagasinage3(C1, C2,C3, LQ, selectedEvent.reference, calendar, alea, file, H, list);
+                        temp = this.finMagasinage3(C1, C2,C3, LQ, selectedEvent.reference, calendar, alea, file, H, list,listClient);
                         LQ = temp.LQ;
                         calendar = temp.calendar;
                         C1 = temp.C1;
@@ -426,10 +446,11 @@ class MyService {
                         C3 = temp.C3;
                         file = temp.file;
                         list = temp.list;
-                        console.log(list)
+                        listClient = temp.listClient
+                        //console.log(list)
                         break;
                     case "FP":
-                        temp = this.finPaiement3(C1, C2, C3, tauxC1, tauxC2, tauxC3, LQ, selectedEvent.reference, calendar, alea, alea_tab,file, H, list);
+                        temp = this.finPaiement3(C1, C2, C3, tauxC1, tauxC2, tauxC3, LQ, selectedEvent.reference, calendar, alea, alea_tab,file, H, list,listClient);
                         LQ = temp.LQ;
                         calendar = temp.calendar;
                         C1 = temp.C1;
@@ -440,12 +461,13 @@ class MyService {
                         tauxC3 = temp.tauxC3;
                         file = temp.file;
                         list = temp.list;
+                        listClient = temp.listClient
                         // console.log(list)
                         break;
                 }
             }
             let TSmy =this.calculerTSmoy(list, NCE);
-            let TATmoy = this.fonctionTATmoy(list)
+            let TATmoy = (this.TATMoy3(listClient)/NCE).toFixed(4)
             outputs.push({
                 index:k,
                 NCE: NCE,
@@ -460,6 +482,14 @@ class MyService {
         }
 
         return outputs;
+    }
+
+    TATMoy3 =(lisClient)=>{
+        let s= 0;
+        lisClient.map(client=>{
+            s = s + (client.DSQ-client.DEQ)
+        })
+        return s;
     }
 
     findAlea = (reference_client, aleas_tab) => {
@@ -495,7 +525,7 @@ class MyService {
                 cpt++;
             }
         })
-        return Math.floor(s / cpt);
+        return (s / cpt).toFixed(4);
     }
 
     fonctionTATmoy = (list) => {
@@ -507,7 +537,7 @@ class MyService {
                 cpt++;
             }
         })
-        return Math.floor(s/cpt);
+        return (s/cpt).toFixed(4);
     }
 
     calculerGerme = (IX, IY, IZ) => {
