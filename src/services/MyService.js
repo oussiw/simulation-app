@@ -243,7 +243,90 @@ class MyService {
         })
     }
 
-    effetuerSimulation = (IX, IY, IZ) => {
+    effetuerSimulation2 = (nb_simulations,IX, IY, IZ) => {
+        let outputs = [];
+        for(let k=0;k < nb_simulations;k++){
+            let calendar = []
+            let H = 0;
+            let file = [];
+            let alea_tab = [];
+            let i = 1;//ref
+            let LQ = 0;
+            let NCP = 0;
+            let NCE = 0;
+            let C1 = 0;
+            let C2 = 0;
+            let C3 = 0;
+            let list = [];
+            alea_tab = this.getAleaTab(IX, IY, IZ);
+            let alea = this.findAlea(i, alea_tab);
+            calendar = this.planifierEvenement(i, "A", this.F1(alea.a), calendar);
+            H = this.F1(alea.a);
+            // let int = 0;
+            while (calendar.length !== 0) {
+                let temporary = this.selectionnerEvenement(calendar, H);
+                let selectedEvent = temporary.selectedEvent;
+                console.log("Event:")
+                console.log(selectedEvent);
+                calendar = temporary.calendar;
+                console.log("Calendar:")
+                console.log(calendar);
+                H = temporary.H;
+                alea = this.findAlea(selectedEvent.reference, alea_tab);
+                // console.log("Alea:")
+                // console.log(alea)
+                let temp;
+                switch (selectedEvent.type) {
+                    case "A":
+                        // console.log("A")
+                        temp = this.fonctionArrivee(LQ, NCE, NCP, selectedEvent.reference, alea, i, alea_tab, calendar, H, list);
+                        LQ = temp.LQ;
+                        calendar = temp.calendar;
+                        NCE = temp.NCE;
+                        NCP = temp.NCP;
+                        list = temp.list
+                        i = temp.i;
+                        break;
+                    case "FM":
+                        // console.log("FM");
+                        temp = this.finMagasinage2(C1, C2, LQ, selectedEvent.reference, calendar, alea, file, H, list);
+                        // temp = this.finMagasinage3(C1, C2,C3, LQ, selectedEvent.reference, calendar, alea, file, H, list);
+                        LQ = temp.LQ;
+                        calendar = temp.calendar;
+                        C1 = temp.C1;
+                        C2 = temp.C2;
+                        C3 = temp.C3;
+                        file = temp.file;
+                        list = temp.list
+                        break;
+                    case "FP":
+                        // console.log("FP")
+                        temp = this.finPaiement2(C1, C2, LQ, selectedEvent.reference, calendar, alea, file, H, list);
+                        // temp = this.finPaiement3(C1, C2, C3, LQ, selectedEvent.reference, calendar, alea, file, H, list);
+                        LQ = temp.LQ;
+                        calendar = temp.calendar;
+                        C1 = temp.C1;
+                        C2 = temp.C2;
+                        C3 = temp.C3;
+                        file = temp.file;
+                        list = temp.list;
+                        break;
+                }
+            }
+            let TSmy =this.calculerTSmoy(list, NCE);
+            let TATmoy = this.fonctionTATmoy(list);
+            outputs.push({
+                index:k,
+                NCE: NCE,
+                NCP: NCP,
+                TSmy:TSmy,
+                TATmoy:TATmoy
+            })
+        }
+        return (outputs)
+    }
+
+    effetuerSimulation3 = (IX, IY, IZ) => {
         let calendar = []
         let H = 0;
         let file = [];

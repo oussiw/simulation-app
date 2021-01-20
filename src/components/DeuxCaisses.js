@@ -6,21 +6,13 @@ class DeuxCaisses extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            NCE: 0,
-            NCP: 0,
-            TSmy: 0,
-            TATmoy: 0
-
+           outputs:[]
         }
     }
 
     componentDidMount() {
-        let temp = MyService.effetuerSimulation(240, 240, 240)
         this.setState({
-            NCE: temp.NCE,
-            NCP: temp.NCP,
-            TSmy: temp.TSmy,
-            TATmoy: temp.TATmoy
+            outputs:MyService.effetuerSimulation2(2,240, 240, 240)
         })
 
     }
@@ -43,15 +35,17 @@ class DeuxCaisses extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td className="text-center">1</td>
-                        <td className="text-center">{this.state.NCE}</td>
-                        <td className="text-center">{this.state.NCP}</td>
-                        <td className="text-center">{this.state.TATmoy} min</td>
-                        <td className="text-center">{this.state.TSmy} min</td>
-                        <td className="text-center">0</td>
-                        <td className="text-center">0</td>
-                    </tr>
+                    {this.state.outputs.map(output=>{
+                        return(<tr>
+                            <td className="text-center">{output.index+1}</td>
+                            <td className="text-center">{output.NCE}</td>
+                            <td className="text-center">{output.NCP}</td>
+                            <td className="text-center">{output.TATmoy} min</td>
+                            <td className="text-center">{output.TSmy} min</td>
+                            <td className="text-center">0</td>
+                            <td className="text-center">0</td>
+                        </tr>);
+                    })}
                     </tbody>
                 </table>
             </div>
