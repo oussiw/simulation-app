@@ -1,32 +1,25 @@
-import '../indicators.js';
-
 class MyService {
 
-    calendar = [];
-    H = 0;
-    alea_tab= [];
-    file = [];
-    i = 1;
-    LQ = 0;
-    NCP = 0;
-    NCE = 0;
-    C1 = 0;
-    C2 = 0;
-    IX = 0;
-    IY = 0;
-    IZ = 0;
-
-    getAleaTab = () => {
-        for (let i = 0; i < 3; i++) {
-            this.alea_tab.push(this.getAlea());
+    getAleaTab = (IX1, IY1, IZ1) => {
+        let tableau = [];
+        let IX = IX1;
+        let IY = IY1;
+        let IZ = IZ1;
+        for (let i = 0; i < 99; i++) {
+            let temp = this.getAlea(IX,IY,IZ);
+            tableau.push(temp.result);
+            IX = temp.IXModifie;
+            IY = temp.IYModifie;
+            IZ = temp.IZModifie;
         }
+        return tableau;
     }
 
-    getAlea = () => {
+    getAlea = (IX1, IY1, IZ1) => {
         let inter;
-        let IX = 171 * (this.IX % 177) - 2 * (this.IX / 177);
-        let IY = 172 * (this.IY % 176) - 35 * (this.IY / 176);
-        let IZ = 170 * (this.IZ % 178) - 63 * (this.IZ / 178);
+        let IX = 171 * (IX1 % 177) - 2 * (IX1 / 177);
+        let IY = 172 * (IY1 % 176) - 35 * (IY1 / 176);
+        let IZ = 170 * (IZ1 % 178) - 63 * (IZ1 / 178);
         if (IX < 0) {
             IX += 30269;
         }
@@ -36,44 +29,53 @@ class MyService {
         if (IZ < 0) {
             IZ += 30323;
         }
-        this.IX = IX;
-        this.IY = IY;
-        this.IZ = IZ;
         inter = ((IX / 30269) + (IY / 30307) + (IZ / 30323));
-        return (inter - Math.floor(inter)).toFixed(4);
+        return ({
+            result: (inter - Math.floor(inter)).toFixed(4),
+            IXModifie: IX,
+            IYModifie: IY,
+            IZModifie: IZ
+        });
     }
 
-    planifierEvenement = (ref, type, date) => {
-        this.calendar.push({
+    planifierEvenement = (ref, type, date, calendar) => {
+        calendar.push({
             reference: ref,
             type: type,
             date: date
         });
+        return calendar;
     }
 
-    selectionnerEvenement = ()=>{
-        let theEvent = this.calendar[0];
+    selectionnerEvenement = (calendar,H)=>{
+        let theEvent = calendar[0];
         let atIndex=0;
-        for(let i=0;i< this.calendar.length;i++){
-            if(( this.calendar[i].date - this.H) < (theEvent.date - this.H)){
-                theEvent = this.calendar[i];
+        for(let i=0;i< calendar.length;i++){
+            if(( calendar[i].date - H) < (theEvent.date - H)){
+                theEvent = calendar[i];
+                atIndex = i;
             }
-            else if((this.calendar[i].date - this.H) === (theEvent.date - this.H)){
-                if(this.calendar[i].type==="A"){
-                    theEvent = this.calendar[i];
+            else if(( calendar[i].date - H) === (theEvent.date - H)){
+                if( calendar[i].type==="A"){
+                    theEvent = calendar[i];
+                    atIndex = i;
                 }
-                else if(this.calendar[i].type==="FM" && theEvent.type==="FP"){
-                    theEvent = this.calendar[i];
+                else if( calendar[i].type ==="FM" && theEvent.type==="FP"){
+                    theEvent = calendar[i];
+                    atIndex = i;
                 }
             }
         }
-        this.H = theEvent.date;
-        this.calendar.splice(atIndex,1);
-        return theEvent;
+        H = theEvent.date;
+        let tempCalendar;
+        if(atIndex===0) tempCalendar = calendar.slice(1,calendar.length);
+        else if(atIndex===calendar.length-1) tempCalendar = calendar.slice(0,calendar.length-1);
+        else {tempCalendar = calendar.slice(0,atIndex).concat(calendar.slice(atIndex+1,calendar.length))};
+        return ({selectedEvent:theEvent, calendar:tempCalendar, H:H});
     }
 
     // temps d'arrivée
-    F1 = (alea) => {
+    F1=(alea) =>{
         if (alea >= 0 && alea < 0.3) return 1;
         if (alea >= 0.3 && alea <= 0.8) return 2;
         if (alea > 0.8 && alea <= 0.9) return 3;
@@ -83,7 +85,7 @@ class MyService {
     }
 
     // temps de magasinage
-    F2 = (alea)=>{
+    F2=(alea)=>{
         if (alea >= 0 && alea < 0.1) return 2;
         if (alea >= 0.1 && alea < 0.3) return 4;
         if (alea >= 0.3 && alea <= 0.7) return 6;
@@ -92,7 +94,7 @@ class MyService {
     }
 
     // temps passé à la caisse
-    F3 = (alea) => {
+    F3=(alea) => {
         if (alea >= 0 && alea < 0.2) return 1;
         if (alea >= 0.2 && alea <= 0.6) return 2;
         if (alea > 0.6 && alea <= 0.85) return 3;
@@ -101,30 +103,48 @@ class MyService {
 
 
     // arrivée
-    fonctionArrivee=(ref,alea)=>{
-        if (this.LQ <= 1) {
-            this.NCE++;
-            this.planifierEvenement(ref, "FM", this.H + this.F2(alea.fm));
+    fonctionArrivee=(LQ,NCE,NCP,ref,alea1,i,alea_tab,calendar,H)=>{
+        let tempCalendar1 = calendar;
+        if (LQ <= 1) {
+            NCE++;
+            tempCalendar1 = this.planifierEvenement(ref, "FM", H + this.F2(alea1.fm), calendar);
         }
-        else { this.NCP++;}
-        this.i++;
-        console.log(this.H)
-        let DA = this.H + this.F1(alea.a);
+        else {NCP++;}
+        i++;
+        let DA = H + this.F1(this.findAlea(i,alea_tab).a);
+        let tempCalendar2 = tempCalendar1;
         if (DA <= 720) {
-            this.planifierEvenement( this.i, "A", DA);
+            tempCalendar2 = this.planifierEvenement(i, "A", DA,tempCalendar1);
         }
+        return ({
+            LQ:LQ,
+            calendar:tempCalendar2,
+            NCE:NCE,
+            NCP:NCP,
+            i:i
+        })
     }
 
     // pour 2 caisses
-    finMagasinage2 =(ref,alea)=>{
-        if (this.C1 === 0 || this.C2 === 0) {
-            if (this.C1 === 0) this.C2 = ref;
-            else this.C2 = ref;
-            this.planifierEvenement(ref, "FP",this.H + this.F3(alea.fp));
+    finMagasinage2 =(C1,C2,LQ,ref,calendar,alea,file,H)=>{
+        console.log(calendar)
+        let tempCalendar = calendar
+        if (C1 === 0 || C2 === 0) {
+            if (C1 === 0) C2 = ref;
+            else C2 = ref;
+            console.log(this.planifierEvenement(ref, "FP",H + this.F3(alea.fp),calendar))
+            tempCalendar = this.planifierEvenement(ref, "FP",H + this.F3(alea.fp),calendar);
         } else {
-            this.LQ = this.LQ + 1;
-            this.file.push(ref);
+            LQ = LQ + 1;
+            file.push(ref);
         }
+        return ({
+            C1:C1,
+            C2:C2,
+            LQ:LQ,
+            calendar:tempCalendar,
+            file:file
+        });
     }
 
     // pour 3 caisses
@@ -143,19 +163,27 @@ class MyService {
     // }
 
     // pour 2 caisses
-    finPaiement2 = (ref,alea) => {
-        if (this.LQ === 0) {
-            if (this.C1 === ref) this.C1 = 0;
-            else this.C2 = 0;
+    finPaiement2 = (C1,C2,LQ,ref,calendar,alea,file,H) => {
+        let tempCalendar = calendar
+        if (LQ === 0) {
+            if (C1 === ref) C1 = 0;
+            else C2 = 0;
         }
         else {
-            let J = this.file[0];
-            this.file.shift(); // supprimer element
-            this.LQ = this.LQ - 1;
-            if (this.C1 === ref) this.C1 = J;
-            else this.C2 = J;
-            this.planifierEvenement(J, "FP", this.H + this.F3(alea));
+            let J = file[0];
+            file.shift();
+            LQ = LQ - 1;
+            if (C1 === ref) C1 = J;
+            else C2 = J;
+            tempCalendar = this.planifierEvenement(J, "FP", H + this.F3(alea),calendar);
         }
+        return ({
+            C1:C1,
+            C2:C2,
+            LQ:LQ,
+            calendar:tempCalendar,
+            file:file
+        })
     }
 
     // pour 3 caisses
@@ -177,67 +205,87 @@ class MyService {
     //     }
     // }
     effetuerSimulation = (IX, IY, IZ) => {
-        this.IX = IX;
-        this.IY = IY;
-        this.IZ = IZ;
-        this.getAleaTab()
-        let alea = this.findAlea(this.i);
-        console.log(this.alea_tab)
-        this.planifierEvenement(1,"A",this.F1(alea.a));
-        this.H = this.F1(alea.a);
+        let calendar =[]
+        let H =0;
+        let file = [];
+        let alea_tab = [];
+        let i = 1;
+        let LQ = 0;
+        let NCP = 0;
+        let NCE = 0;
+        let C1 = 0;
+        let C2 = 0;
+        alea_tab = this.getAleaTab(IX,IY,IZ);
+        let alea = this.findAlea(i, alea_tab);
+        calendar = this.planifierEvenement(i,"A",this.F1(alea.a),calendar);
+        H = this.F1(alea.a);
         let int = 0;
-
-        console.log(this.calendar)
-        console.log("Calendar")
-
-        while (this.calendar.length!==0 && int <10){
-            let selectedEvent = this.selectionnerEvenement();
-            alea = this.findAlea(selectedEvent.reference);
+        while (calendar.length !== 0){
+            // console.log(calendar);
+            let temporary = this.selectionnerEvenement(calendar,H);
+            let selectedEvent = temporary.selectedEvent;
+            console.log(selectedEvent)
+            calendar = temporary.calendar;
+            H = temporary.H;
+            alea = this.findAlea(selectedEvent.reference,alea_tab);
+            let temp;
+            // console.log(calendar);
             switch (selectedEvent.type) {
                 case "A":
-                    this.fonctionArrivee(selectedEvent.reference,alea);
+                    temp = this.fonctionArrivee(LQ,NCE,NCP,selectedEvent.reference,alea,i,alea_tab,calendar,H);
+                    LQ = temp.LQ;
+                    calendar = temp.calendar;
+                    NCE = temp.NCE;
+                    NCP = temp.NCP;
+                    i = temp.i;
+                    console.log(calendar)
                     break;
                 case "FM":
-                    this.finMagasinage2(selectedEvent.reference,alea);
+                    temp = this.finMagasinage2(C1,C2,LQ,selectedEvent.reference,calendar,alea,file,H);
+                    LQ = temp.LQ;
+                    calendar = temp.calendar;
+                    C1 = temp.C1;
+                    C2 = temp.C2;
+                    file = temp.file;
+                    console.log("FM")
                     break;
                 case "FP":
-                    this.finPaiement2(selectedEvent.reference,alea);
+                    temp = this.finPaiement2(C1,C2,LQ,selectedEvent.reference,calendar,alea,file,H);
+                    LQ = temp.LQ;
+                    calendar = temp.calendar;
+                    C1 = temp.C1;
+                    C2 = temp.C2;
+                    file = temp.file;
+                    console.log("FP")
                     break;
             }
-            // console.log({
-            //     NCE:this.NCE,
-            //     NCP:this.NCP,
-            //     i:this.i,
-            //     LQ:this.LQ,
-            //     C1:this.C1,
-            //     C2:this.C2,
-            //     file:this.file
-            // })
             int++;
         }
+
         return ({
-            NCE:this.NCE,
-            NCP:this.NCP,
-            i:this.i,
-            LQ:this.LQ,
-            C1:this.C1,
-            C2:this.C2,
-            file:this.file
+            NCE:NCE,
+            NCP:NCP,
+            i:i,
+            LQ:LQ,
+            C1:C1,
+            C2:C2,
+            file:file
         })
     }
 
-    findAlea =(reference_client)=>{
+    findAlea =(reference_client,aleas_tab)=>{
+       
         let alea = {a:0,fm:0,fp:0};
         let indice_client = 0;
-        for(let i=0; i < this.alea_tab.length; i++){
+        for(let i=0; i < aleas_tab.length; i++){
             if(i%3===0){
                 indice_client = 1;
             }
             if(indice_client === reference_client){
-                if(i%3===0) alea.a = this.alea_tab[i];
-                else if(i%3===1) alea.fm = this.alea_tab[i];
+                if(i%3===0) alea.a = aleas_tab[i];
+                else if(i%3===1) alea.fm = aleas_tab[i];
                 else if(i%3===2) {
-                    alea.fp = this.alea_tab[i];
+                    alea.fp = aleas_tab[i];
                     break;
                 }
             }
