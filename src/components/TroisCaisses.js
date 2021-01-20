@@ -12,7 +12,7 @@ class TroisCaisses extends Component {
 
     componentDidMount() {
         this.setState({
-            outputs:MyService.effetuerSimulation3(40,240, 240, 240)
+            outputs:MyService.effetuerSimulation3(this.props.nb,this.props.IX, this.props.IY, this.props.IZ)
         })
 
     }
