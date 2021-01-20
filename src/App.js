@@ -83,6 +83,7 @@ class App extends Component {
                 <hr/>
                 {!this.state.deuxCaissesHidden && <DeuxCaisses IX={this.state.IX} IY={this.state.IY} IZ={this.state.IZ} nb={this.state.nb}/>}
                 {!this.state.troisCaissesHidden && <TroisCaisses IX={this.state.IX} IY={this.state.IY} IZ={this.state.IZ} nb={this.state.nb}/>}
+
             </div>
         );
     }
