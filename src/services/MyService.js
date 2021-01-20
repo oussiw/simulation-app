@@ -224,29 +224,50 @@ class MyService {
     }
 
     // pour 3 caisses
-    finPaiement3 = (C1, C2, C3, LQ, ref, calendar, alea, file, H, list) => {
+    finPaiement3 = (C1, C2, C3, tauxC1, tauxC2, tauxC3, LQ, ref, calendar, alea,alea_tab, file, H, list) => {
         let tempCalendar = calendar;
         if (LQ === 0) {
-            if (C1 === ref) C1 = 0;
-            else if (C2 === ref) C2 = 0;
-            else C3 = 0;
+            if (C1 === ref) {
+                C1 = 0;
+                tauxC1+= this.F3(alea.fp)
+            }
+            else if (C2 === ref) {
+                C2 = 0;
+                tauxC2+= this.F3(alea.fp)
+            }
+            else {
+                C3 = 0;
+                tauxC3+= this.F3(alea.fp)
+            }
         }
         else {
             let J = file[0];
             file.shift();
             LQ = LQ - 1;
-            if (C1 === ref) C1 = J;
-            else if (C2 === ref) C2 = J;
-            else C3 = J;
+            if (C1 === ref) {
+                C1 = J;
+                tauxC1+= this.F3(alea.fp)
+            }
+            else if (C2 === ref) {
+                C2 = J;
+                tauxC2+= this.F3(alea.fp)
+            }
+            else {
+                C3 = J;
+                tauxC3+= this.F3(alea.fp)
+            }
             let DP = H;
             list[ref - 1].push(DP) // ajouter Date de fin de paiement
             list[J-1].push(H);
-            tempCalendar = this.planifierEvenement(J, "FP", H + this.F3(alea.fp), calendar);
+            tempCalendar = this.planifierEvenement(J, "FP", H + this.F3(this.findAlea(J,alea_tab).fp), calendar);
         }
         return ({
             C1: C1,
             C2: C2,
             C3: C3,
+            tauxC1: tauxC1,
+            tauxC2: tauxC2,
+            tauxC3: tauxC3,
             LQ: LQ,
             calendar: tempCalendar,
             file: file,
@@ -266,8 +287,8 @@ class MyService {
                 IX1 = temp99.IX
                 IY1 = temp99.IY
                 IZ1 = temp99.IZ
-                console.log(temp99)
             }
+            console.log("Germes: "+IX1+"--"+IY1+"--"+IZ1)
             let H = 0;
             let file = [];
             let alea_tab = [];
@@ -285,19 +306,12 @@ class MyService {
             let alea = this.findAlea(i, alea_tab);
             calendar = this.planifierEvenement(i, "A", this.F1(alea.a), calendar);
             H = this.F1(alea.a);
-            // let int = 0;
             while (calendar.length !== 0) {
                 let temporary = this.selectionnerEvenement(calendar, H);
                 let selectedEvent = temporary.selectedEvent;
-                //console.log("Event:")
-                //console.log(selectedEvent);
                 calendar = temporary.calendar;
-                //console.log("Calendar:")
-                //console.log(calendar);
                 H = temporary.H;
                 alea = this.findAlea(selectedEvent.reference, alea_tab);
-                // console.log("Alea:")
-                // console.log(alea)
                 let temp;
                 switch (selectedEvent.type) {
                     case "A":
@@ -313,7 +327,6 @@ class MyService {
                     case "FM":
                         // console.log("FM");
                         temp = this.finMagasinage2(C1, C2, LQ, selectedEvent.reference, calendar, alea, file, H, list);
-                        // temp = this.finMagasinage3(C1, C2,C3, LQ, selectedEvent.reference, calendar, alea, file, H, list);
                         LQ = temp.LQ;
                         calendar = temp.calendar;
                         C1 = temp.C1;
@@ -325,7 +338,6 @@ class MyService {
                     case "FP":
                         // console.log("FP")
                         temp = this.finPaiement2(C1, C2, tauxC1, tauxC2,LQ, selectedEvent.reference, calendar, alea, alea_tab,file, H, list);
-                        // temp = this.finPaiement3(C1, C2, C3, LQ, selectedEvent.reference, calendar, alea, file, H, list);
                         LQ = temp.LQ;
                         calendar = temp.calendar;
                         C1 = temp.C1;
@@ -340,8 +352,6 @@ class MyService {
             }
             let TSmy =this.calculerTSmoy(list, NCE);
             let TATmoy = this.fonctionTATmoy(list);
-
-            //console.log("i: "+i)
             outputs.push({
                 index:k,
                 NCE: NCE,
@@ -358,8 +368,17 @@ class MyService {
 
     effetuerSimulation3 = (nb_simulations,IX, IY, IZ) => {
         let outputs = [];
+        let IX1 = IX
+        let IY1 = IY
+        let IZ1 = IZ
         for(let k=0;k < nb_simulations;k++){
             let calendar = []
+            if(k!==0){
+                let temp99 =this.calculerGerme(IX1,IY1,IZ1)
+                IX1 = temp99.IX
+                IY1 = temp99.IY
+                IZ1 = temp99.IZ
+            }
             let H = 0;
             let file = [];
             let alea_tab = [];
@@ -370,8 +389,11 @@ class MyService {
             let C1 = 0;
             let C2 = 0;
             let C3 = 0;
+            let tauxC1 = 0;
+            let tauxC2 = 0;
+            let tauxC3 = 0;
             let list = [];
-            alea_tab = this.getAleaTab(IX, IY, IZ);
+            alea_tab = this.getAleaTab(IX1, IY1, IZ1);
             let alea = this.findAlea(i, alea_tab);
             calendar = this.planifierEvenement(i, "A", this.F1(alea.a), calendar);
             H = this.F1(alea.a);
@@ -379,15 +401,10 @@ class MyService {
             while (calendar.length !== 0) {
                 let temporary = this.selectionnerEvenement(calendar, H);
                 let selectedEvent = temporary.selectedEvent;
-                //console.log("Event:")
-                //console.log(selectedEvent);
+                console.log(selectedEvent)
                 calendar = temporary.calendar;
-                //console.log("Calendar:")
-                //console.log(calendar);
                 H = temporary.H;
                 alea = this.findAlea(selectedEvent.reference, alea_tab);
-                // console.log("Alea:")
-                // console.log(alea)
                 let temp;
                 switch (selectedEvent.type) {
                     case "A":
@@ -401,8 +418,6 @@ class MyService {
                         i = temp.i;
                         break;
                     case "FM":
-                        // console.log("FM");
-                        //temp = this.finMagasinage2(C1, C2, LQ, selectedEvent.reference, calendar, alea, file, H, list);
                         temp = this.finMagasinage3(C1, C2,C3, LQ, selectedEvent.reference, calendar, alea, file, H, list);
                         LQ = temp.LQ;
                         calendar = temp.calendar;
@@ -413,14 +428,15 @@ class MyService {
                         list = temp.list
                         break;
                     case "FP":
-                        // console.log("FP")
-                        //temp = this.finPaiement2(C1, C2, LQ, selectedEvent.reference, calendar, alea, file, H, list);
-                        temp = this.finPaiement3(C1, C2, C3, LQ, selectedEvent.reference, calendar, alea, file, H, list);
+                        temp = this.finPaiement3(C1, C2, C3, tauxC1, tauxC2, tauxC3, LQ, selectedEvent.reference, calendar, alea, alea_tab,file, H, list);
                         LQ = temp.LQ;
                         calendar = temp.calendar;
                         C1 = temp.C1;
                         C2 = temp.C2;
                         C3 = temp.C3;
+                        tauxC1 = temp.tauxC1;
+                        tauxC2 = temp.tauxC2;
+                        tauxC3 = temp.tauxC3;
                         file = temp.file;
                         list = temp.list;
                         break;
@@ -433,7 +449,11 @@ class MyService {
                 NCE: NCE,
                 NCP: NCP,
                 TSmy:TSmy,
-                TATmoy:TATmoy
+                TATmoy:TATmoy,
+                tauxC1:tauxC1/H,
+                tauxC2:tauxC2/H,
+                tauxC3:tauxC3/H,
+                DFS:H
             })
         }
 
@@ -474,8 +494,6 @@ class MyService {
             }
         })
         return Math.floor(s / cpt);
-        //console.log("Temps de sejour moyen " + Math.floor(s / cpt) + " min");
-        //return Math.floor(s / 6);
     }
 
     fonctionTATmoy = (list) => {
@@ -490,15 +508,9 @@ class MyService {
             }
         })
         return Math.floor(s/cpt);
-        //console.log("Temps d'attente moyen "+ Math.floor(s/cpt))
-    }
-
-    fonctionTauC1 =()=>{
-
     }
 
     calculerGerme = (IX, IY, IZ) => {
-
         return {
             IX :IX+5,
             IY: IY+5,

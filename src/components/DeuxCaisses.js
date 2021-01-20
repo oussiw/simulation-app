@@ -12,7 +12,7 @@ class DeuxCaisses extends Component {
 
     componentDidMount() {
         this.setState({
-            outputs:MyService.effetuerSimulation2(2,240, 240, 240)
+            outputs:MyService.effetuerSimulation2(40,240, 240, 240)
         })
 
     }
